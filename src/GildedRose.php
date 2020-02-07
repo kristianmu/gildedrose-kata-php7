@@ -18,7 +18,7 @@ final class GildedRose {
             if (!$this->isAgedBrie($item) and !$this->isBackStagePass($item)) {
                 if ($this->notExpired($item)) {
                     if (!$this->isSulfura($item)) {
-                        $item->quality = $item->quality - 1;
+                        $this->decreaseQuality($item);
                     }
                 }
             } else {
@@ -27,12 +27,12 @@ final class GildedRose {
                     if ($this->isBackStagePass($item)) {
                         if ($item->sell_in < 11) {
                             if ($item->quality < 50) {
-                                $item->quality = $item->quality + 1;
+                                $this->increaseQuality($item);
                             }
                         }
                         if ($item->sell_in < 6) {
                             if ($item->quality < 50) {
-                                $item->quality = $item->quality + 1;
+                                $this->increaseQuality($item);
                             }
                         }
                     }
@@ -48,7 +48,7 @@ final class GildedRose {
                     if (!$this->isBackStagePass($item)) {
                         if ($this->notExpired($item)) {
                             if (!$this->isSulfura($item)) {
-                                $item->quality = $item->quality - 1;
+                                $this->decreaseQuality($item);
                             }
                         }
                     } else {
@@ -56,7 +56,7 @@ final class GildedRose {
                     }
                 } else {
                     if ($item->quality < 50) {
-                        $item->quality = $item->quality + 1;
+                        $this->increaseQuality($item);
                     }
                 }
             }
@@ -97,6 +97,22 @@ final class GildedRose {
     private function notExpired($item): bool
     {
         return $item->quality > 0;
+    }
+
+    /**
+     * @param $item
+     */
+    private function decreaseQuality($item): void
+    {
+        $item->quality = $item->quality - 1;
+    }
+
+    /**
+     * @param $item
+     */
+    private function increaseQuality($item): void
+    {
+        $item->quality = $item->quality + 1;
     }
 }
 
