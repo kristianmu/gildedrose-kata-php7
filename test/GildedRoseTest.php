@@ -9,4 +9,12 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $gildedRose->updateQuality();
         $this->assertEquals("fixme", $items[0]->name);
     }
+
+    public function testName()
+    {
+
+
+    }
+
+
 }
