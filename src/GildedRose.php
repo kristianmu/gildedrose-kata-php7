@@ -44,9 +44,7 @@ final class GildedRose {
                         $item->quality = $item->quality - $item->quality;
                     }
                 } else {
-                    if (!$this->hasMaximumQuality($item)) {
-                        $this->increaseQuality($item);
-                    }
+                    $this->increaseQuality($item);
                 }
             }
         }
