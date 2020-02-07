@@ -16,11 +16,7 @@ final class GildedRose {
     public function updateQuality() {
         foreach ($this->items as $item) {
             if (!$this->isAgedBrie($item) and !$this->isBackStagePass($item)) {
-                if ($this->notExpired($item)) {
-                    if (!$this->isSulfura($item)) {
-                        $this->decreaseQuality($item);
-                    }
-                }
+                $this->decreaseQuality($item);
             } else {
                 if (!$this->hasMaximumQuality($item)) {
                     $this->increaseQuality($item);
@@ -40,17 +36,14 @@ final class GildedRose {
             }
             
             if (!$this->isSulfura($item)) {
-                $item->sell_in = $item->sell_in - 1;
+                $this->decreaseSellByDate($item);
             }
             
             if ($item->sell_in < 0) {
                 if (!$this->isAgedBrie($item)) {
                     if (!$this->isBackStagePass($item)) {
-                        if ($this->notExpired($item)) {
-                            if (!$this->isSulfura($item)) {
                                 $this->decreaseQuality($item);
-                            }
-                        }
+
                     } else {
                         $item->quality = $item->quality - $item->quality;
                     }
@@ -104,7 +97,11 @@ final class GildedRose {
      */
     private function decreaseQuality($item): void
     {
-        $item->quality = $item->quality - 1;
+        if ($this->notExpired($item)) {
+            if (!$this->isSulfura($item)) {
+                $item->quality = $item->quality - 1;
+            }
+        }
     }
 
     /**
@@ -122,6 +119,14 @@ final class GildedRose {
     private function hasMaximumQuality($item): bool
     {
         return ($item->quality >= 50);
+    }
+
+    /**
+     * @param $item
+     */
+    private function decreaseSellByDate($item): void
+    {
+        $item->sell_in = $item->sell_in - 1;
     }
 }
 

@@ -61,6 +61,18 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality);
     }
 
+
+    /**
+     * @test
+     */
+    public function itShouldNeverDecreaseQualityOfSulfuras() {
+        $item = $this->generateSualfuras();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality);
+    }
     /**
      * @test
      */
@@ -129,12 +141,9 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     /**
      * @return Item
      */
-    private function generateRegularItem(): Item
+    private function generateRegularItem($name = self::REGULAR_ITEM_NAME,  $quality = self::DEFAULT_INITIAL_QUALITY, $sell_by = self::IRRELEVANT_SELL_BY_DATE ): Item
     {
-        $item = new Item(self::REGULAR_ITEM_NAME,
-            self::IRRELEVANT_SELL_BY_DATE,
-            self::DEFAULT_INITIAL_QUALITY);
-        return $item;
+        return  new Item($name, $sell_by, $quality);
     }
 
     /**
@@ -167,6 +176,14 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $brieItem = $this->generateBrieItemWithZeroQuality();
         $brieItem->quality = 50;
         return $brieItem;
+    }
+
+    private function generateSualfuras()
+    {
+        return $this->generateRegularItem(
+            GildedRose::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS,
+            self::MAXIMUM_ITEM_QUALITY
+        );
     }
 
 
