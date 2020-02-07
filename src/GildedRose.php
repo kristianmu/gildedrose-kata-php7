@@ -20,6 +20,8 @@ final class GildedRose {
                 if ($item->sell_in < 0) {
                     $this->increaseQuality($item);
                 }
+                $this->decreaseSellByDate($item);
+
             } else if ($this->isBackStagePass($item)) {
                 $this->increaseQuality($item);
                 if ($this->isBackStagePass($item)) {
@@ -31,20 +33,20 @@ final class GildedRose {
                     }
 
                 }
+                $this->decreaseSellByDate($item);
                 if ($item->sell_in < 0) {
                     $item->quality = $item->quality - $item->quality;
                 }
+            } else if ($this->isSulfura($item)) {
+                // Sulfuras does nothing
             } else {
                 $this->decreaseQuality($item);
                 if ($item->sell_in < 0) {
                     $this->decreaseQuality($item);
                 }
-            }
-            
-            if (!$this->isSulfura($item)) {
                 $this->decreaseSellByDate($item);
+
             }
-            
 
         }
     }
@@ -91,9 +93,7 @@ final class GildedRose {
     private function decreaseQuality($item): void
     {
         if ($this->notExpired($item)) {
-            if (!$this->isSulfura($item)) {
-                $item->quality = $item->quality - 1;
-            }
+            $item->quality = $item->quality - 1;
         }
     }
 
