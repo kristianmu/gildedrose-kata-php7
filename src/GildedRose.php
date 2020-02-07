@@ -15,16 +15,16 @@ final class GildedRose {
 
     public function updateQuality() {
         foreach ($this->items as $item) {
-            if ($item->name != self::ITEM_NAME_AGED_BRIE and $item->name != self::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT) {
+            if (!$this->isAgedBrie($item) and !$this->isBackStagePass($item)) {
                 if ($item->quality > 0) {
-                    if ($item->name != self::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS) {
+                    if (!$this->isSulfura($item)) {
                         $item->quality = $item->quality - 1;
                     }
                 }
             } else {
                 if ($item->quality < 50) {
                     $item->quality = $item->quality + 1;
-                    if ($item->name == self::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT) {
+                    if ($this->isBackStagePass($item)) {
                         if ($item->sell_in < 11) {
                             if ($item->quality < 50) {
                                 $item->quality = $item->quality + 1;
@@ -39,15 +39,15 @@ final class GildedRose {
                 }
             }
             
-            if ($item->name != self::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS) {
+            if (!$this->isSulfura($item)) {
                 $item->sell_in = $item->sell_in - 1;
             }
             
             if ($item->sell_in < 0) {
-                if ($item->name != self::ITEM_NAME_AGED_BRIE) {
-                    if ($item->name != self::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT) {
+                if (!$this->isAgedBrie($item)) {
+                    if (!$this->isBackStagePass($item)) {
                         if ($item->quality > 0) {
-                            if ($item->name != self::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS) {
+                            if (!$this->isSulfura($item)) {
                                 $item->quality = $item->quality - 1;
                             }
                         }
@@ -61,6 +61,33 @@ final class GildedRose {
                 }
             }
         }
+    }
+
+    /**
+     * @param $item
+     * @return bool
+     */
+    private function isAgedBrie($item): bool
+    {
+        return ($item->name == self::ITEM_NAME_AGED_BRIE);
+    }
+
+    /**
+     * @param $item
+     * @return bool
+     */
+    private function isBackStagePass($item): bool
+    {
+        return ($item->name == self::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT);
+    }
+
+    /**
+     * @param $item
+     * @return bool
+     */
+    private function isSulfura($item): bool
+    {
+        return ($item->name == self::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS);
     }
 }
 
