@@ -22,16 +22,16 @@ final class GildedRose {
                     }
                 }
             } else {
-                if ($item->quality < 50) {
-                    $item->quality = $item->quality + 1;
+                if (!$this->hasMaximumQuality($item)) {
+                    $this->increaseQuality($item);
                     if ($this->isBackStagePass($item)) {
                         if ($item->sell_in < 11) {
-                            if ($item->quality < 50) {
+                            if (!$this->hasMaximumQuality($item)) {
                                 $this->increaseQuality($item);
                             }
                         }
                         if ($item->sell_in < 6) {
-                            if ($item->quality < 50) {
+                            if (!$this->hasMaximumQuality($item)) {
                                 $this->increaseQuality($item);
                             }
                         }
@@ -113,6 +113,15 @@ final class GildedRose {
     private function increaseQuality($item): void
     {
         $item->quality = $item->quality + 1;
+    }
+
+    /**
+     * @param $item
+     * @return bool
+     */
+    private function hasMaximumQuality($item): bool
+    {
+        return ($item->quality >= 50);
     }
 }
 
