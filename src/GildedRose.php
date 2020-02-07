@@ -15,24 +15,20 @@ final class GildedRose {
 
     public function updateQuality() {
         foreach ($this->items as $item) {
-            if (!$this->isAgedBrie($item) and !$this->isBackStagePass($item)) {
-                $this->decreaseQuality($item);
-            } else {
-                if (!$this->hasMaximumQuality($item)) {
-                    $this->increaseQuality($item);
-                    if ($this->isBackStagePass($item)) {
-                        if ($item->sell_in < 11) {
-                            if (!$this->hasMaximumQuality($item)) {
-                                $this->increaseQuality($item);
-                            }
-                        }
-                        if ($item->sell_in < 6) {
-                            if (!$this->hasMaximumQuality($item)) {
-                                $this->increaseQuality($item);
-                            }
-                        }
+            if ($this->isAgedBrie($item)) {
+                $this->increaseQuality($item);
+            } else if ($this->isBackStagePass($item)) {
+                $this->increaseQuality($item);
+                if ($this->isBackStagePass($item)) {
+                    if ($item->sell_in < 11) {
+                        $this->increaseQuality($item);
+                    }
+                    if ($item->sell_in < 6) {
+                        $this->increaseQuality($item);
                     }
                 }
+            } else {
+                $this->decreaseQuality($item);
             }
             
             if (!$this->isSulfura($item)) {
@@ -109,7 +105,9 @@ final class GildedRose {
      */
     private function increaseQuality($item): void
     {
-        $item->quality = $item->quality + 1;
+        if (!$this->hasMaximumQuality($item)) {
+           $item->quality = $item->quality + 1;
+        }
     }
 
     /**
