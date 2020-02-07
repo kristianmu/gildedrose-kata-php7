@@ -16,7 +16,7 @@ final class GildedRose {
     public function updateQuality() {
         foreach ($this->items as $item) {
             if (!$this->isAgedBrie($item) and !$this->isBackStagePass($item)) {
-                if ($item->quality > 0) {
+                if ($this->notExpired($item)) {
                     if (!$this->isSulfura($item)) {
                         $item->quality = $item->quality - 1;
                     }
@@ -46,7 +46,7 @@ final class GildedRose {
             if ($item->sell_in < 0) {
                 if (!$this->isAgedBrie($item)) {
                     if (!$this->isBackStagePass($item)) {
-                        if ($item->quality > 0) {
+                        if ($this->notExpired($item)) {
                             if (!$this->isSulfura($item)) {
                                 $item->quality = $item->quality - 1;
                             }
@@ -88,6 +88,15 @@ final class GildedRose {
     private function isSulfura($item): bool
     {
         return ($item->name == self::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS);
+    }
+
+    /**
+     * @param $item
+     * @return bool
+     */
+    private function notExpired($item): bool
+    {
+        return $item->quality > 0;
     }
 }
 
