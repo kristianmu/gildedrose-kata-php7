@@ -66,12 +66,24 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
      * @test
      */
     public function itShouldNeverDecreaseQualityOfSulfuras() {
-        $item = $this->generateSualfuras();
+        $item = $this->generateSulfuras();
         $gildedRose = new GildedRose([$item]);
 
         $gildedRose->updateQuality();
 
         $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality);
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldNeverDecreaseSellByDateOfSulfuras() {
+        $item = $this->generateSulfuras();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::DEFAULT_INITIAL_QUALITY, $item->sell_in);
     }
     /**
      * @test
@@ -178,7 +190,7 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         return $brieItem;
     }
 
-    private function generateSualfuras()
+    private function generateSulfuras()
     {
         return $this->generateRegularItem(
             GildedRose::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS,
