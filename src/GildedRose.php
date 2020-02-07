@@ -17,6 +17,9 @@ final class GildedRose {
         foreach ($this->items as $item) {
             if ($this->isAgedBrie($item)) {
                 $this->increaseQuality($item);
+                if ($item->sell_in < 0) {
+                    $this->increaseQuality($item);
+                }
             } else if ($this->isBackStagePass($item)) {
                 $this->increaseQuality($item);
                 if ($this->isBackStagePass($item)) {
@@ -26,27 +29,23 @@ final class GildedRose {
                     if ($item->sell_in < 6) {
                         $this->increaseQuality($item);
                     }
+
+                }
+                if ($item->sell_in < 0) {
+                    $item->quality = $item->quality - $item->quality;
                 }
             } else {
                 $this->decreaseQuality($item);
+                if ($item->sell_in < 0) {
+                    $this->decreaseQuality($item);
+                }
             }
             
             if (!$this->isSulfura($item)) {
                 $this->decreaseSellByDate($item);
             }
             
-            if ($item->sell_in < 0) {
-                if (!$this->isAgedBrie($item)) {
-                    if (!$this->isBackStagePass($item)) {
-                                $this->decreaseQuality($item);
 
-                    } else {
-                        $item->quality = $item->quality - $item->quality;
-                    }
-                } else {
-                    $this->increaseQuality($item);
-                }
-            }
         }
     }
 

@@ -85,6 +85,7 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertEquals(self::DEFAULT_INITIAL_QUALITY, $item->sell_in);
     }
+
     /**
      * @test
      */
