@@ -181,10 +181,7 @@ class GildedRoseTest extends TestCase
      */
     public function itShouldAgeAllItemsAccordingToFullRulesSet()
     {
-        $outputFileName = __DIR__ . '/result.txt';
-        $output = fopen($outputFileName, 'wb');
-
-        fputs($output, "OMGHAI!\n");
+        $output = "OMGHAI!\n";
 
         $items = array(
             new GenericRuledItem(new Item('+5 Dexterity Vest', 10, 20)),
@@ -195,7 +192,6 @@ class GildedRoseTest extends TestCase
             new BackstagePassRuledItem(new Item('Backstage passes to a TAFKAL80ETC concert', 15, 20)),
             new BackstagePassRuledItem(new Item('Backstage passes to a TAFKAL80ETC concert', 10, 49)),
             new BackstagePassRuledItem(new Item('Backstage passes to a TAFKAL80ETC concert', 5, 49)),
-            // this conjured item does not work properly yet
             new ConjuredRuledItem(new Item('Conjured Mana Cake', 3, 6))
         );
 
@@ -203,41 +199,19 @@ class GildedRoseTest extends TestCase
 
         $days = 2;
         for ($i = 0; $i < $days; $i++) {
-            fputs($output, "-------- day $i --------\n");
-            fputs($output, "name, sellIn, quality\n");
+            $output .= "-------- day $i --------\n";
+            $output .= "name, sellIn, quality\n";
 
             foreach ($items as $item) {
-                fputs($output, $item . PHP_EOL);
+                $output .= $item . PHP_EOL;
             }
 
-            fputs($output, PHP_EOL);
+            $output .= PHP_EOL;
 
             $app->updateQuality();
         }
 
-        fclose($output);
-
-        $this->assertTrue($this->files_are_equal($outputFileName, __DIR__ . "/goldenmaster.txt"));
-    }
-
-    private function files_are_equal($a, $b)
-    {
-        // Check if filesize is different
-        if (filesize($a) !== filesize($b))
-            return false;
-        // Check if content is different
-        $ah = fopen($a, 'rb');
-        $bh = fopen($b, 'rb');
-        $result = true;
-        while (!feof($ah)) {
-            if (fread($ah, 8192) != fread($bh, 8192)) {
-                $result = false;
-                break;
-            }
-        }
-        fclose($ah);
-        fclose($bh);
-        return $result;
+        $this->assertEquals($output, file_get_contents(__DIR__ . "/goldenmaster.txt"));
     }
 
     private function generateRegularItem($name = self::REGULAR_ITEM_NAME, $quality = self::DEFAULT_INITIAL_QUALITY, $sell_by = self::IRRELEVANT_SELL_IN_DAYS): Item
