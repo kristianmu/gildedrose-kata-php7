@@ -102,7 +102,7 @@ class GildedRoseTest extends TestCase
 
         $gildedRose->updateQuality();
 
-        $this->assertEquals(self::DEFAULT_INITIAL_QUALITY - 1, $genericItem->quality());
+        $this->assertEquals(self::DEFAULT_QUALITY_AFTER_ONE_DAY, $genericItem->quality());
     }
 
     /**
