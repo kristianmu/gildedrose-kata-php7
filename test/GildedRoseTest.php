@@ -13,6 +13,7 @@ class GildedRoseTest extends TestCase
     const DEFAULT_QUALITY_AFTER_ONE_DAY = 9;
     const DEFAULT_SELL_IN_DAYS_AFTER_ONE_DAY = 9;
     const MAXIMUM_ITEM_QUALITY = 50;
+    const EXPIRED = 0;
 
     /**
      * @test
@@ -189,6 +190,19 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
+    public function itShouldPutQualityToZeroIfBackStagePassRuledItemHasExpired()
+    {
+        $item = $this->generateExpiredBackStagePassRuledItem();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(0, $item->quality());
+    }
+
+    /**
+     * @test
+     */
     public function itShouldAgeAllItemsAccordingToFullRulesSet()
     {
         $outputFileName = __DIR__ . '/result.txt';
@@ -199,7 +213,7 @@ class GildedRoseTest extends TestCase
         $items = array(
             new GenericRuledItem(new Item('+5 Dexterity Vest', 10, 20)),
             new AgedBrieRuledItem(new Item('Aged Brie', 2, 0)),
-            new Item('Elixir of the Mongoose', 5, 7),
+            new GenericRuledItem(new Item('Elixir of the Mongoose', 5, 7)),
             new SulfurasRuledItem(new Item('Sulfuras, Hand of Ragnaros', 0, 80)),
             new SulfurasRuledItem(new Item('Sulfuras, Hand of Ragnaros', -1, 80)),
             new Item('Backstage passes to a TAFKAL80ETC concert', 15, 20),
@@ -334,5 +348,16 @@ class GildedRoseTest extends TestCase
         );
 
         return new SulfurasRuledItem($sulfurasItem);
+    }
+
+    private function generateExpiredBackStagePassRuledItem()
+    {
+        $backStagePassItem = $this->generateRegularItem(
+            GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
+            self::MAXIMUM_ITEM_QUALITY,
+            self::EXPIRED
+        );
+
+        return new BackstagePassRuledItem($backStagePassItem);
     }
 }

@@ -57,4 +57,9 @@ class GenericRuledItem
     public function __toString() {
         return "{$this->item->name}, {$this->item->sell_in}, {$this->item->quality}";
     }
+
+    protected function isExpired()
+    {
+        return $this->item->sell_in <= 0;
+    }
 }
