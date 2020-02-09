@@ -95,7 +95,7 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldIncreaseAlwaysAnAgedBirdItem()
+    public function itShouldDecreaseGenericItemQuality()
     {
         $genericItem = $this->genericItem();
         $gildedRose = new GildedRose([$genericItem]);
