@@ -6,6 +6,8 @@ namespace App;
 
 class BackstagePassRuledItem extends GenericRuledItem
 {
+    const ITEM_NAME = 'Backstage passes to a TAFKAL80ETC concert';
+
     public function updateItemQuality(): void
     {
         $this->increaseQuality();

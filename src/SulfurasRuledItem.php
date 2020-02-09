@@ -6,6 +6,8 @@ namespace App;
 
 class SulfurasRuledItem extends GenericRuledItem
 {
+    const ITEM_NAME = 'Sulfuras, Hand of Ragnaros';
+
     public function updateItemQuality(): void
     {
         // Do nothing

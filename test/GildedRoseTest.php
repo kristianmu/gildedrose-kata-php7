@@ -23,86 +23,6 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldDecreaseQualityAtTheEndOfTheDayForRegularItems()
-    {
-        $item = $this->generateRegularItem();
-        $gildedRose = new GildedRose([$item]);
-
-        $gildedRose->updateQuality();
-
-        $this->assertEquals(self::DEFAULT_QUALITY_AFTER_ONE_DAY, $item->quality);
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldNeverHaveANegativeQualityRegularItems()
-    {
-        $item = $this->generateRegularItemWithZeroQuality();
-        $gildedRose = new GildedRose([$item]);
-
-        $gildedRose->updateQuality();
-
-        $this->assertEquals(0, $item->quality);
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldIncreaseInQualityIfAgedBrieItem()
-    {
-        $item = $this->generateBrieItemWithZeroQuality();
-        $gildedRose = new GildedRose([$item]);
-
-        $gildedRose->updateQuality();
-
-        $this->assertEquals(1, $item->quality);
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldNeverIncreaseInQualityOverFiftyIfAgedBrieItem()
-    {
-        $item = $this->generateBrieItemWithFiftyQuality();
-        $gildedRose = new GildedRose([$item]);
-
-        $gildedRose->updateQuality();
-
-        $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality);
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldNeverDecreaseQualityOfSulfuras()
-    {
-        $item = $this->generateSulfuras();
-        $gildedRose = new GildedRose([$item]);
-
-        $gildedRose->updateQuality();
-
-        $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality);
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldNeverDecreaseSellByDateOfSulfuras()
-    {
-        $item = $this->generateSulfuras();
-        $gildedRose = new GildedRose([$item]);
-
-        $gildedRose->updateQuality();
-
-        $this->assertEquals(self::DEFAULT_SELL_IN_DAYS, $item->sell_in);
-    }
-
-    // ===== New tests by type
-
-    /**
-     * @test
-     */
     public function itShouldDecreaseGenericItemQuality()
     {
         $genericItem = $this->genericItem();
@@ -335,7 +255,7 @@ class GildedRoseTest extends TestCase
     private function generateBrieItemWithZeroQuality(): Item
     {
         $item = $this->generateRegularItemWithZeroQuality();
-        $item->name = GildedRose::ITEM_NAME_AGED_BRIE;
+        $item->name = AgedBrieRuledItem::ITEM_NAME;
         return $item;
     }
 
@@ -349,7 +269,7 @@ class GildedRoseTest extends TestCase
     private function generateSulfuras()
     {
         return $this->generateRegularItem(
-            GildedRose::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS,
+            SulfurasRuledItem::ITEM_NAME,
             self::MAXIMUM_ITEM_QUALITY
         );
     }
@@ -386,7 +306,7 @@ class GildedRoseTest extends TestCase
     private function generateSulfurasRuledItem(): SulfurasRuledItem
     {
         $sulfurasItem = $this->generateRegularItem(
-            GildedRose::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS,
+            SulfurasRuledItem::ITEM_NAME,
             self::MAXIMUM_ITEM_QUALITY
         );
 
@@ -396,7 +316,7 @@ class GildedRoseTest extends TestCase
     private function generateBackStageRuledItem(): Item
     {
         return $this->generateRegularItem(
-            GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
+            BackstagePassRuledItem::ITEM_NAME,
             self::DEFAULT_INITIAL_QUALITY,
             self::DEFAULT_SELL_IN_DAYS
         );
@@ -437,7 +357,7 @@ class GildedRoseTest extends TestCase
     private function generateConjuredRuledItem(): ConjuredRuledItem
     {
         $conjuredItem = $this->generateRegularItem(
-            GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
+            BackstagePassRuledItem::ITEM_NAME,
             self::DEFAULT_INITIAL_QUALITY,
             self::DEFAULT_SELL_IN_DAYS
         );
