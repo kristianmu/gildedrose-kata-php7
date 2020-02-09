@@ -6,26 +6,12 @@ use PHPUnit\Framework\TestCase;
 
 class GildedRoseTest extends TestCase
 {
-    const REGULAR_ITEM_NAME = "Regular Item";
-    const DEFAULT_SELL_IN_DAYS = 10;
-    const IRRELEVANT_SELL_IN_DAYS = 10;
-    const DEFAULT_INITIAL_QUALITY = 10;
-    const DEFAULT_QUALITY_AFTER_ONE_DAY = 9;
-    const DEFAULT_SELL_IN_DAYS_AFTER_ONE_DAY = 9;
-    const MAXIMUM_ITEM_QUALITY = 50;
-    const EXPIRED = 0;
-    const SELL_IN_TEN_DAYS = 10;
-    const SELL_IN_FIVE_DAYS = 5;
-    const DEFAULT_QUALITY_INCREASED_TWICE_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY + 2;
-    const DEFAULT_QUALITY_INCREASED_THREE_TIMES_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY + 3;
-    const DEFAULT_QUALITY_DECREASED_TWICE_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY - 2;
-
     /**
      * @test
      */
-    public function itShouldDecreaseGenericItemQuality()
+    public function itShouldDecreaseGenericRuledItemQuality()
     {
-        $genericItem = $this->genericItem();
+        $genericItem = $this->generateGenericRuledItemWithDefaultQuality();
         $gildedRose = new GildedRose([$genericItem]);
 
         $gildedRose->updateQuality();
@@ -36,9 +22,9 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldDecreaseGenericItemSellByDate()
+    public function itShouldDecreaseGenericRuledItemSellByDate()
     {
-        $genericItem = $this->genericItem();
+        $genericItem = $this->generateGenericRuledItemWithDefaultQuality();
         $gildedRose = new GildedRose([$genericItem]);
 
         $gildedRose->updateQuality();
@@ -51,7 +37,7 @@ class GildedRoseTest extends TestCase
      */
     public function itShouldNeverHaveANegativeQualityGenericItems()
     {
-        $genericItem = $this->genericItemWithZeroQuality();
+        $genericItem = $this->generateGenericRuledItemWithZeroQuality();
         $gildedRose = new GildedRose([$genericItem]);
 
         $gildedRose->updateQuality();
@@ -181,52 +167,76 @@ class GildedRoseTest extends TestCase
      */
     public function itShouldAgeAllItemsAccordingToFullRulesSet()
     {
-        $this->assertEquals(shell_exec("php ".__DIR__."/../fixtures/texttest_fixture.php"), file_get_contents(__DIR__ . "/goldenmaster.txt"));
+        $expected = file_get_contents(__DIR__ . "/goldenmaster.txt");
+        $result = shell_exec("php ".__DIR__."/../fixtures/texttest_fixture.php");
+        $this->assertEquals($expected, $result);
     }
+
+
+    // =============================== Helpers =====================================================
+
+    const REGULAR_ITEM_NAME = "Regular Item";
+    const DEFAULT_SELL_IN_DAYS = 10;
+    const IRRELEVANT_SELL_IN_DAYS = 10;
+    const DEFAULT_INITIAL_QUALITY = 10;
+    const DEFAULT_QUALITY_AFTER_ONE_DAY = 9;
+    const DEFAULT_SELL_IN_DAYS_AFTER_ONE_DAY = 9;
+    const MAXIMUM_ITEM_QUALITY = 50;
+    const EXPIRED = 0;
+    const SELL_IN_TEN_DAYS = 10;
+    const SELL_IN_FIVE_DAYS = 5;
+    const DEFAULT_QUALITY_INCREASED_TWICE_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY + 2;
+    const DEFAULT_QUALITY_INCREASED_THREE_TIMES_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY + 3;
+    const DEFAULT_QUALITY_DECREASED_TWICE_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY - 2;
 
     private function generateRegularItem($name = self::REGULAR_ITEM_NAME, $quality = self::DEFAULT_INITIAL_QUALITY, $sell_by = self::IRRELEVANT_SELL_IN_DAYS): Item
     {
         return new Item($name, $sell_by, $quality);
     }
 
-    private function generateRegularItemWithZeroQuality(): Item
+    private function generateAgedBrieItem(): Item
     {
         $item = $this->generateRegularItem();
-        $item->quality = 0;
-        return $item;
-    }
-
-    private function generateBrieItemWithZeroQuality(): Item
-    {
-        $item = $this->generateRegularItemWithZeroQuality();
         $item->name = AgedBrieRuledItem::ITEM_NAME;
+
         return $item;
     }
 
-    private function genericItem(): GenericRuledItem
+    private function generateBackStageItem(): Item
+    {
+        return $this->generateRegularItem(
+            BackstagePassRuledItem::ITEM_NAME,
+            self::DEFAULT_INITIAL_QUALITY,
+            self::DEFAULT_SELL_IN_DAYS
+        );
+    }
+
+    private function generateGenericRuledItemWithDefaultQuality(): GenericRuledItem
     {
         $item = $this->generateRegularItem();
 
         return new GenericRuledItem($item);
     }
 
-    private function genericItemWithZeroQuality(): GenericRuledItem
+    private function generateGenericRuledItemWithZeroQuality(): GenericRuledItem
     {
-        $item = $this->generateRegularItemWithZeroQuality();
+        $item = $this->generateRegularItem();
+        $item->quality = 0;
 
         return new GenericRuledItem($item);
     }
 
     private function generateAgedBrieRuledItemWithZeroQuality(): AgedBrieRuledItem
     {
-        $item = $this->generateBrieItemWithZeroQuality();
+        $item = $this->generateAgedBrieItem();
+        $item->quality = 0;
 
         return new AgedBrieRuledItem($item);
     }
 
     private function generateAgedBrieRuledItemWithFiftyQuality(): AgedBrieRuledItem
     {
-        $brieItem = $this->generateBrieItemWithZeroQuality();
+        $brieItem = $this->generateAgedBrieItem();
         $brieItem->quality = 50;
 
         return new AgedBrieRuledItem($brieItem);
@@ -242,18 +252,9 @@ class GildedRoseTest extends TestCase
         return new SulfurasRuledItem($sulfurasItem);
     }
 
-    private function generateBackStageRuledItem(): Item
-    {
-        return $this->generateRegularItem(
-            BackstagePassRuledItem::ITEM_NAME,
-            self::DEFAULT_INITIAL_QUALITY,
-            self::DEFAULT_SELL_IN_DAYS
-        );
-    }
-
     private function generateExpiredBackStagePassRuledItem(): BackstagePassRuledItem
     {
-        $backStagePassItem = $this->generateBackStageRuledItem();
+        $backStagePassItem = $this->generateBackStageItem();
         $backStagePassItem->sell_in = self::EXPIRED;
 
         return new BackstagePassRuledItem($backStagePassItem);
@@ -261,7 +262,7 @@ class GildedRoseTest extends TestCase
 
     private function generate10DaysBackStagePassRuledItem(): BackstagePassRuledItem
     {
-        $backStagePassItem = $this->generateBackStageRuledItem();
+        $backStagePassItem = $this->generateBackStageItem();
         $backStagePassItem->sell_in = self::SELL_IN_TEN_DAYS;
 
         return new BackstagePassRuledItem($backStagePassItem);
@@ -269,7 +270,7 @@ class GildedRoseTest extends TestCase
 
     private function generate5DaysBackStagePassRuledItem(): BackstagePassRuledItem
     {
-        $backStagePassItem = $this->generateBackStageRuledItem();
+        $backStagePassItem = $this->generateBackStageItem();
         $backStagePassItem->sell_in = self::SELL_IN_FIVE_DAYS;
 
         return new BackstagePassRuledItem($backStagePassItem);
@@ -277,7 +278,7 @@ class GildedRoseTest extends TestCase
 
     private function generateBackStageItemItemWithFiftyQuality(): BackstagePassRuledItem
     {
-        $backStageItem = $this->generateBackStageRuledItem();
+        $backStageItem = $this->generateBackStageItem();
         $backStageItem->quality = self::MAXIMUM_ITEM_QUALITY;
 
         return new BackstagePassRuledItem($backStageItem);
