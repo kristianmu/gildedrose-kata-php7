@@ -7,7 +7,7 @@ class GenericRuledItem
     /**
      * @var Item
      */
-    private Item $item;
+    protected Item $item;
 
     /**
      * RegularItemRules constructor.

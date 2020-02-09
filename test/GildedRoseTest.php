@@ -65,7 +65,6 @@ class GildedRoseTest extends TestCase
         $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality);
     }
 
-
     /**
      * @test
      */
@@ -118,7 +117,18 @@ class GildedRoseTest extends TestCase
         $this->assertEquals(0, $genericItem->quality());
     }
 
+    /**
+     * @test
+     */
+    public function itShouldIncreaseInQualityIfAgedBrieRuledItem()
+    {
+        $item = $this->generateAgedBrieRuledItemWithZeroQuality();
+        $gildedRose = new GildedRose([$item]);
 
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(1, $item->quality());
+    }
 
     /**
      * @test
@@ -241,8 +251,15 @@ class GildedRoseTest extends TestCase
 
     private function genericItemWithZeroQuality(): GenericRuledItem
     {
-        $item = $this->generateBrieItemWithZeroQuality() ;
+        $item = $this->generateRegularItemWithZeroQuality() ;
 
         return new GenericRuledItem($item);
+    }
+
+    private function generateAgedBrieRuledItemWithZeroQuality(): AgedBrieRuledItem
+    {
+        $item = $this->generateBrieItemWithZeroQuality() ;
+
+        return new AgedBrieRuledItem($item);
     }
 }
