@@ -91,6 +91,8 @@ class GildedRoseTest extends TestCase
         $this->assertEquals(self::DEFAULT_INITIAL_QUALITY, $item->sell_in);
     }
 
+    // ===== New tests by type
+
     /**
      * @test
      */
@@ -128,6 +130,19 @@ class GildedRoseTest extends TestCase
         $gildedRose->updateQuality();
 
         $this->assertEquals(1, $item->quality());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldNeverIncreaseInQualityOverFiftyIfAgedBrieRuledItem()
+    {
+        $item = $this->generateAgedBrieRuledItemWithFiftyQuality();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality());
     }
 
     /**
@@ -261,5 +276,13 @@ class GildedRoseTest extends TestCase
         $item = $this->generateBrieItemWithZeroQuality() ;
 
         return new AgedBrieRuledItem($item);
+    }
+
+    private function generateAgedBrieRuledItemWithFiftyQuality(): AgedBrieRuledItem
+    {
+        $brieItem = $this->generateBrieItemWithZeroQuality() ;
+        $brieItem->quality = 50;
+
+        return new AgedBrieRuledItem($brieItem);
     }
 }
