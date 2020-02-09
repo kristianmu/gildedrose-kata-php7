@@ -18,17 +18,21 @@ final class GildedRose
     public function updateQuality()
     {
         foreach ($this->items as $item) {
-            if ($this->isAgedBrie($item)) {
-                $this->updateAgedBrieQuality($item);
-                $this->decreaseSellByDate($item);
-            } else if ($this->isBackStagePass($item)) {
-                $this->updateBackstagePassQuality($item);
-                $this->decreaseSellByDate($item);
-            } else if ($this->isSulfura($item)) {
-                // Sulfuras does nothing
+            if ($item instanceof GenericRuledItem) {
+                $item->updateItemQuality();
             } else {
-                $this->updateRegularItemQuality($item);
-                $this->decreaseSellByDate($item);
+                if ($this->isAgedBrie($item)) {
+                    $this->updateAgedBrieQuality($item);
+                    $this->decreaseSellByDate($item);
+                } else if ($this->isBackStagePass($item)) {
+                    $this->updateBackstagePassQuality($item);
+                    $this->decreaseSellByDate($item);
+                } else if ($this->isSulfura($item)) {
+                    // Sulfuras does nothing
+                } else {
+                    $this->updateRegularItemQuality($item);
+                    $this->decreaseSellByDate($item);
+                }
             }
         }
     }
@@ -64,7 +68,7 @@ final class GildedRose
      * @param $item
      * @return bool
      */
-    private function notExpired($item): bool
+    private function hasQuality($item): bool
     {
         return $item->quality > 0;
     }
@@ -74,7 +78,7 @@ final class GildedRose
      */
     private function decreaseQuality($item): void
     {
-        if ($this->notExpired($item)) {
+        if ($this->hasQuality($item)) {
             $item->quality = $item->quality - 1;
         }
     }

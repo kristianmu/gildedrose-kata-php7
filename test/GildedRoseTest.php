@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Throwable;
+use PHPUnit\Framework\TestCase;
 
-class GildedRoseTest extends \PHPUnit\Framework\TestCase
+class GildedRoseTest extends TestCase
 {
     const REGULAR_ITEM_NAME = "Regular Item";
     const IRRELEVANT_SELL_BY_DATE = 10;
@@ -90,6 +90,19 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase
         $gildedRose->updateQuality();
 
         $this->assertEquals(self::DEFAULT_INITIAL_QUALITY, $item->sell_in);
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldIncreaseAlwaysAnAgedBirdItem()
+    {
+        $genericItem = $this->genericItem();
+        $gildedRose = new GildedRose([$genericItem]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::DEFAULT_INITIAL_QUALITY - 1, $genericItem->quality());
     }
 
     /**
@@ -204,5 +217,10 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    private function genericItem(): GenericRuledItem
+    {
+        $item = $this->generateRegularItem();
 
+        return new GenericRuledItem($item);
+    }
 }
