@@ -108,6 +108,21 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
+    public function itShouldNeverHaveANegativeQualityGenericItems()
+    {
+        $genericItem = $this->genericItemWithZeroQuality();
+        $gildedRose = new GildedRose([$genericItem]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(0, $genericItem->quality());
+    }
+
+
+
+    /**
+     * @test
+     */
     public function itShouldAgeAllItemsAccordingToFullRulesSet()
     {
         $outputFileName = __DIR__ . '/result.txt';
@@ -220,6 +235,13 @@ class GildedRoseTest extends TestCase
     private function genericItem(): GenericRuledItem
     {
         $item = $this->generateRegularItem();
+
+        return new GenericRuledItem($item);
+    }
+
+    private function genericItemWithZeroQuality(): GenericRuledItem
+    {
+        $item = $this->generateBrieItemWithZeroQuality() ;
 
         return new GenericRuledItem($item);
     }
