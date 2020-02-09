@@ -148,6 +148,19 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
+    public function itShouldNeverDecreaseQualityOfSulfurasRuledItem()
+    {
+        $item = $this->generateSulfurasRuledItem();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality());
+    }
+
+    /**
+     * @test
+     */
     public function itShouldAgeAllItemsAccordingToFullRulesSet()
     {
         $outputFileName = __DIR__ . '/result.txt';
@@ -284,5 +297,15 @@ class GildedRoseTest extends TestCase
         $brieItem->quality = 50;
 
         return new AgedBrieRuledItem($brieItem);
+    }
+
+    private function generateSulfurasRuledItem(): SulfurasRuledItem
+    {
+        $sulfurasItem = $this->generateRegularItem(
+            GildedRose::ITEM_NAME_SULFURAS_HAND_OF_RAGNAROS,
+            self::MAXIMUM_ITEM_QUALITY
+        );
+
+        return new SulfurasRuledItem($sulfurasItem);
     }
 }
