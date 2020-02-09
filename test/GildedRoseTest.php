@@ -259,21 +259,6 @@ class GildedRoseTest extends TestCase
         return $item;
     }
 
-    private function generateBrieItemWithFiftyQuality(): Item
-    {
-        $brieItem = $this->generateBrieItemWithZeroQuality();
-        $brieItem->quality = 50;
-        return $brieItem;
-    }
-
-    private function generateSulfuras()
-    {
-        return $this->generateRegularItem(
-            SulfurasRuledItem::ITEM_NAME,
-            self::MAXIMUM_ITEM_QUALITY
-        );
-    }
-
     private function genericItem(): GenericRuledItem
     {
         $item = $this->generateRegularItem();
