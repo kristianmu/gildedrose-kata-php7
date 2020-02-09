@@ -46,7 +46,7 @@ class GenericRuledItem
 
     protected function hasMaximumQuality(): bool
     {
-        return $this->item->quality >= 50;
+        return $this->item->quality == 50;
     }
 
     protected function increaseQuality(): void
@@ -54,7 +54,8 @@ class GenericRuledItem
         $this->item->quality = $this->item->quality + 1;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return "{$this->item->name}, {$this->item->sell_in}, {$this->item->quality}";
     }
 

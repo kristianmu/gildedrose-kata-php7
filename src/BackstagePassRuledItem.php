@@ -21,4 +21,11 @@ class BackstagePassRuledItem extends GenericRuledItem
             $this->item->quality = 0;
         }
     }
+
+    protected function increaseQuality(): void
+    {
+        if (!$this->hasMaximumQuality()) {
+            $this->item->quality = $this->item->quality + 1;
+        }
+    }
 }

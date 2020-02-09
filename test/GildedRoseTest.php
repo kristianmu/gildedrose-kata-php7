@@ -58,7 +58,6 @@ class GildedRoseTest extends TestCase
         $this->assertEquals(1, $item->quality);
     }
 
-
     /**
      * @test
      */
@@ -233,6 +232,19 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
+    public function itShouldNeverIncreaseInQualityOverFiftyIfBackStagePassItem()
+    {
+        $item = $this->generateBackStageItemItemWithFiftyQuality();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality());
+    }
+
+    /**
+     * @test
+     */
     public function itShouldAgeAllItemsAccordingToFullRulesSet()
     {
         $outputFileName = __DIR__ . '/result.txt';
@@ -246,9 +258,9 @@ class GildedRoseTest extends TestCase
             new GenericRuledItem(new Item('Elixir of the Mongoose', 5, 7)),
             new SulfurasRuledItem(new Item('Sulfuras, Hand of Ragnaros', 0, 80)),
             new SulfurasRuledItem(new Item('Sulfuras, Hand of Ragnaros', -1, 80)),
-            new Item('Backstage passes to a TAFKAL80ETC concert', 15, 20),
-            new Item('Backstage passes to a TAFKAL80ETC concert', 10, 49),
-            new Item('Backstage passes to a TAFKAL80ETC concert', 5, 49),
+            new BackstagePassRuledItem(new Item('Backstage passes to a TAFKAL80ETC concert', 15, 20)),
+            new BackstagePassRuledItem(new Item('Backstage passes to a TAFKAL80ETC concert', 10, 49)),
+            new BackstagePassRuledItem(new Item('Backstage passes to a TAFKAL80ETC concert', 5, 49)),
             // this conjured item does not work properly yet
             new Item('Conjured Mana Cake', 3, 6)
         );
@@ -259,11 +271,12 @@ class GildedRoseTest extends TestCase
         for ($i = 0; $i < $days; $i++) {
             fputs($output, "-------- day $i --------\n");
             fputs($output, "name, sellIn, quality\n");
+
             foreach ($items as $item) {
                 fputs($output, $item . PHP_EOL);
             }
-            fputs($output, PHP_EOL);
 
+            fputs($output, PHP_EOL);
 
             $app->updateQuality();
         }
@@ -294,17 +307,11 @@ class GildedRoseTest extends TestCase
         return $result;
     }
 
-    /**
-     * @return Item
-     */
     private function generateRegularItem($name = self::REGULAR_ITEM_NAME, $quality = self::DEFAULT_INITIAL_QUALITY, $sell_by = self::IRRELEVANT_SELL_IN_DAYS): Item
     {
         return new Item($name, $sell_by, $quality);
     }
 
-    /**
-     * @return Item
-     */
     private function generateRegularItemWithZeroQuality(): Item
     {
         $item = $this->generateRegularItem();
@@ -312,10 +319,6 @@ class GildedRoseTest extends TestCase
         return $item;
     }
 
-
-    /**
-     * @return Item
-     */
     private function generateBrieItemWithZeroQuality(): Item
     {
         $item = $this->generateRegularItemWithZeroQuality();
@@ -323,9 +326,6 @@ class GildedRoseTest extends TestCase
         return $item;
     }
 
-    /**
-     * @return Item
-     */
     private function generateBrieItemWithFiftyQuality(): Item
     {
         $brieItem = $this->generateBrieItemWithZeroQuality();
@@ -380,36 +380,44 @@ class GildedRoseTest extends TestCase
         return new SulfurasRuledItem($sulfurasItem);
     }
 
-    private function generateExpiredBackStagePassRuledItem()
+    private function generateBackStageRuledItem(): Item
     {
-        $backStagePassItem = $this->generateRegularItem(
+        return $this->generateRegularItem(
             GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
-            self::MAXIMUM_ITEM_QUALITY,
-            self::EXPIRED
+            self::DEFAULT_INITIAL_QUALITY,
+            self::MAXIMUM_ITEM_QUALITY
         );
+    }
+
+    private function generateExpiredBackStagePassRuledItem(): BackstagePassRuledItem
+    {
+        $backStagePassItem = $this->generateBackStageRuledItem();
+        $backStagePassItem->sell_in = self::EXPIRED;
 
         return new BackstagePassRuledItem($backStagePassItem);
     }
 
-    private function generate10DaysBackStagePassRuledItem()
+    private function generate10DaysBackStagePassRuledItem(): BackstagePassRuledItem
     {
-        $backStagePassItem = $this->generateRegularItem(
-            GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
-            self::DEFAULT_INITIAL_QUALITY,
-            self::SELL_IN_TEN_DAYS
-        );
+        $backStagePassItem = $this->generateBackStageRuledItem();
+        $backStagePassItem->sell_in = self::SELL_IN_TEN_DAYS;
 
         return new BackstagePassRuledItem($backStagePassItem);
     }
 
-    private function generate5DaysBackStagePassRuledItem()
+    private function generate5DaysBackStagePassRuledItem(): BackstagePassRuledItem
     {
-        $backStagePassItem = $this->generateRegularItem(
-            GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
-            self::DEFAULT_INITIAL_QUALITY,
-            self::SELL_IN_FIVE_DAYS
-        );
+        $backStagePassItem = $this->generateBackStageRuledItem();
+        $backStagePassItem->sell_in = self::SELL_IN_FIVE_DAYS;
 
         return new BackstagePassRuledItem($backStagePassItem);
+    }
+
+    private function generateBackStageItemItemWithFiftyQuality(): BackstagePassRuledItem
+    {
+        $backStageItem = $this->generateBackStageRuledItem();
+        $backStageItem->quality = self::MAXIMUM_ITEM_QUALITY;
+
+        return new BackstagePassRuledItem($backStageItem);
     }
 }
