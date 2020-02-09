@@ -13,6 +13,10 @@ class BackstagePassRuledItem extends GenericRuledItem
             $this->increaseQuality();
         }
 
+        if ($this->item->sell_in <= 5) {
+            $this->increaseQuality();
+        }
+
         if ($this->isExpired()) {
             $this->item->quality = 0;
         }

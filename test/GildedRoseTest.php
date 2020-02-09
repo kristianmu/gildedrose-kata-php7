@@ -15,7 +15,9 @@ class GildedRoseTest extends TestCase
     const MAXIMUM_ITEM_QUALITY = 50;
     const EXPIRED = 0;
     const SELL_IN_TEN_DAYS = 10;
+    const SELL_IN_FIVE_DAYS = 5;
     const DEFAULT_QUALITY_AFTER_ONE_DAY_TWICE_FASTER = self::DEFAULT_INITIAL_QUALITY + 2;
+    const DEFAULT_QUALITY_AFTER_ONE_DAY_THREE_TIMES_FASTER = self::DEFAULT_INITIAL_QUALITY + 3;
 
     /**
      * @test
@@ -218,6 +220,19 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
+    public function itShouldIncreaseQualityThreeTimesFasterIfBackStagePassRuledItemDateIsSmallerThan5Days()
+    {
+        $item = $this->generate5DaysBackStagePassRuledItem();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::DEFAULT_QUALITY_AFTER_ONE_DAY_THREE_TIMES_FASTER, $item->quality());
+    }
+
+    /**
+     * @test
+     */
     public function itShouldAgeAllItemsAccordingToFullRulesSet()
     {
         $outputFileName = __DIR__ . '/result.txt';
@@ -382,6 +397,17 @@ class GildedRoseTest extends TestCase
             GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
             self::DEFAULT_INITIAL_QUALITY,
             self::SELL_IN_TEN_DAYS
+        );
+
+        return new BackstagePassRuledItem($backStagePassItem);
+    }
+
+    private function generate5DaysBackStagePassRuledItem()
+    {
+        $backStagePassItem = $this->generateRegularItem(
+            GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
+            self::DEFAULT_INITIAL_QUALITY,
+            self::SELL_IN_FIVE_DAYS
         );
 
         return new BackstagePassRuledItem($backStagePassItem);
