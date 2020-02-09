@@ -7,7 +7,8 @@ use PHPUnit\Framework\TestCase;
 class GildedRoseTest extends TestCase
 {
     const REGULAR_ITEM_NAME = "Regular Item";
-    const IRRELEVANT_SELL_BY_DATE = 10;
+    const IRRELEVANT_SELL_IN_DAYS = 10;
+    const DEFAULT_SELL_IN_DAYS = 10;
     const DEFAULT_INITIAL_QUALITY = 10;
     const DEFAULT_QUALITY_AFTER_ONE_DAY = 9;
     const MAXIMUM_ITEM_QUALITY = 50;
@@ -88,7 +89,7 @@ class GildedRoseTest extends TestCase
 
         $gildedRose->updateQuality();
 
-        $this->assertEquals(self::DEFAULT_INITIAL_QUALITY, $item->sell_in);
+        $this->assertEquals(self::DEFAULT_SELL_IN_DAYS, $item->sell_in);
     }
 
     // ===== New tests by type
@@ -161,6 +162,19 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
+    public function itShouldNeverDecreaseSellByDateOfSulfurasRuledType()
+    {
+        $item = $this->generateSulfurasRuledItem();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::DEFAULT_SELL_IN_DAYS, $item->sell_in());
+    }
+
+    /**
+     * @test
+     */
     public function itShouldAgeAllItemsAccordingToFullRulesSet()
     {
         $outputFileName = __DIR__ . '/result.txt';
@@ -226,7 +240,7 @@ class GildedRoseTest extends TestCase
     /**
      * @return Item
      */
-    private function generateRegularItem($name = self::REGULAR_ITEM_NAME, $quality = self::DEFAULT_INITIAL_QUALITY, $sell_by = self::IRRELEVANT_SELL_BY_DATE): Item
+    private function generateRegularItem($name = self::REGULAR_ITEM_NAME, $quality = self::DEFAULT_INITIAL_QUALITY, $sell_by = self::IRRELEVANT_SELL_IN_DAYS): Item
     {
         return new Item($name, $sell_by, $quality);
     }
