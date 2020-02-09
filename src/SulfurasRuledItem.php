@@ -8,6 +8,13 @@ class SulfurasRuledItem extends GenericRuledItem
 {
     public function updateItemQuality(): void
     {
-       // do nothing
+        // Do nothing
+        return;
+    }
+
+    public function updateItemSellByDate(): void
+    {
+        // Do nothing
+        return;
     }
 }

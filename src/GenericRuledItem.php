@@ -4,27 +4,24 @@ namespace App;
 
 class GenericRuledItem
 {
-    /**
-     * @var Item
-     */
+    /** @var Item */
     protected Item $item;
 
-    /**
-     * RegularItemRules constructor.
-     * @param Item $item
-     */
     public function __construct(Item $item)
     {
         $this->item = $item;
     }
 
-    public function quality() {
+    public function quality()
+    {
         return $this->item->quality;
     }
 
-    /**
-     * @param $item
-     */
+    public function sell_in()
+    {
+        return $this->item->sell_in;
+    }
+
     public function updateItemQuality(): void
     {
         if ($this->hasQuality()) {
@@ -32,22 +29,32 @@ class GenericRuledItem
         }
     }
 
-    /**
-     * @param $item
-     * @return bool
-     */
+    public function updateItemSellByDate(): void
+    {
+        $this->item->sell_in = $this->item->sell_in - 1;
+    }
+
     private function hasQuality(): bool
     {
         return $this->item->quality > 0;
     }
 
-    /**
-     * @param $item
-     */
     private function decreaseQuality(): void
     {
         $this->item->quality = $this->item->quality - 1;
     }
 
+    protected function hasMaximumQuality(): bool
+    {
+        return $this->item->quality >= 50;
+    }
 
+    protected function increaseQuality(): void
+    {
+        $this->item->quality = $this->item->quality + 1;
+    }
+
+    public function __toString() {
+        return "{$this->item->name}, {$this->item->sell_in}, {$this->item->quality}";
+    }
 }

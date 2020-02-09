@@ -7,10 +7,11 @@ use PHPUnit\Framework\TestCase;
 class GildedRoseTest extends TestCase
 {
     const REGULAR_ITEM_NAME = "Regular Item";
-    const IRRELEVANT_SELL_IN_DAYS = 10;
     const DEFAULT_SELL_IN_DAYS = 10;
+    const IRRELEVANT_SELL_IN_DAYS = 10;
     const DEFAULT_INITIAL_QUALITY = 10;
     const DEFAULT_QUALITY_AFTER_ONE_DAY = 9;
+    const DEFAULT_SELL_IN_DAYS_AFTER_ONE_DAY = 9;
     const MAXIMUM_ITEM_QUALITY = 50;
 
     /**
@@ -110,6 +111,19 @@ class GildedRoseTest extends TestCase
     /**
      * @test
      */
+    public function itShouldDecreaseGenericItemSellByDate()
+    {
+        $genericItem = $this->genericItem();
+        $gildedRose = new GildedRose([$genericItem]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::DEFAULT_SELL_IN_DAYS_AFTER_ONE_DAY, $genericItem->sell_in());
+    }
+
+    /**
+     * @test
+     */
     public function itShouldNeverHaveANegativeQualityGenericItems()
     {
         $genericItem = $this->genericItemWithZeroQuality();
@@ -183,8 +197,8 @@ class GildedRoseTest extends TestCase
         fputs($output, "OMGHAI!\n");
 
         $items = array(
-            new Item('+5 Dexterity Vest', 10, 20),
-            new Item('Aged Brie', 2, 0),
+            new GenericRuledItem(new Item('+5 Dexterity Vest', 10, 20)),
+            new AgedBrieRuledItem(new Item('Aged Brie', 2, 0)),
             new Item('Elixir of the Mongoose', 5, 7),
             new Item('Sulfuras, Hand of Ragnaros', 0, 80),
             new Item('Sulfuras, Hand of Ragnaros', -1, 80),
@@ -212,9 +226,8 @@ class GildedRoseTest extends TestCase
 
         fclose($output);
 
+        $this->assertEquals(file_get_contents($outputFileName), file_get_contents(__DIR__ . "/goldenmaster.txt"));
         $this->assertTrue($this->files_are_equal($outputFileName, __DIR__ . "/goldenmaster.txt"));
-
-
     }
 
     private function files_are_equal($a, $b)
@@ -293,21 +306,21 @@ class GildedRoseTest extends TestCase
 
     private function genericItemWithZeroQuality(): GenericRuledItem
     {
-        $item = $this->generateRegularItemWithZeroQuality() ;
+        $item = $this->generateRegularItemWithZeroQuality();
 
         return new GenericRuledItem($item);
     }
 
     private function generateAgedBrieRuledItemWithZeroQuality(): AgedBrieRuledItem
     {
-        $item = $this->generateBrieItemWithZeroQuality() ;
+        $item = $this->generateBrieItemWithZeroQuality();
 
         return new AgedBrieRuledItem($item);
     }
 
     private function generateAgedBrieRuledItemWithFiftyQuality(): AgedBrieRuledItem
     {
-        $brieItem = $this->generateBrieItemWithZeroQuality() ;
+        $brieItem = $this->generateBrieItemWithZeroQuality();
         $brieItem->quality = 50;
 
         return new AgedBrieRuledItem($brieItem);

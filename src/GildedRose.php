@@ -20,6 +20,7 @@ final class GildedRose
         foreach ($this->items as $item) {
             if ($item instanceof GenericRuledItem) {
                 $item->updateItemQuality();
+                $item->updateItemSellByDate();
             } else {
                 if ($this->isAgedBrie($item)) {
                     $this->updateAgedBrieQuality($item);
