@@ -16,8 +16,9 @@ class GildedRoseTest extends TestCase
     const EXPIRED = 0;
     const SELL_IN_TEN_DAYS = 10;
     const SELL_IN_FIVE_DAYS = 5;
-    const DEFAULT_QUALITY_AFTER_ONE_DAY_TWICE_FASTER = self::DEFAULT_INITIAL_QUALITY + 2;
-    const DEFAULT_QUALITY_AFTER_ONE_DAY_THREE_TIMES_FASTER = self::DEFAULT_INITIAL_QUALITY + 3;
+    const DEFAULT_QUALITY_INCREASED_TWICE_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY + 2;
+    const DEFAULT_QUALITY_INCREASED_THREE_TIMES_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY + 3;
+    const DEFAULT_QUALITY_DECREASED_TWICE_FASTER_AFTER_ONE_DAY = self::DEFAULT_INITIAL_QUALITY - 2;
 
     /**
      * @test
@@ -213,7 +214,7 @@ class GildedRoseTest extends TestCase
 
         $gildedRose->updateQuality();
 
-        $this->assertEquals(self::DEFAULT_QUALITY_AFTER_ONE_DAY_TWICE_FASTER, $item->quality());
+        $this->assertEquals(self::DEFAULT_QUALITY_INCREASED_TWICE_FASTER_AFTER_ONE_DAY, $item->quality());
     }
 
     /**
@@ -226,7 +227,7 @@ class GildedRoseTest extends TestCase
 
         $gildedRose->updateQuality();
 
-        $this->assertEquals(self::DEFAULT_QUALITY_AFTER_ONE_DAY_THREE_TIMES_FASTER, $item->quality());
+        $this->assertEquals(self::DEFAULT_QUALITY_INCREASED_THREE_TIMES_FASTER_AFTER_ONE_DAY, $item->quality());
     }
 
     /**
@@ -240,6 +241,19 @@ class GildedRoseTest extends TestCase
         $gildedRose->updateQuality();
 
         $this->assertEquals(self::MAXIMUM_ITEM_QUALITY, $item->quality());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldDecreaseTwiceFasterTheQualityForConjuredRuledItem()
+    {
+        $item = $this->generateConjuredRuledItem();
+        $gildedRose = new GildedRose([$item]);
+
+        $gildedRose->updateQuality();
+
+        $this->assertEquals(self::DEFAULT_QUALITY_DECREASED_TWICE_FASTER_AFTER_ONE_DAY, $item->quality());
     }
 
     /**
@@ -385,7 +399,7 @@ class GildedRoseTest extends TestCase
         return $this->generateRegularItem(
             GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
             self::DEFAULT_INITIAL_QUALITY,
-            self::MAXIMUM_ITEM_QUALITY
+            self::DEFAULT_SELL_IN_DAYS
         );
     }
 
@@ -419,5 +433,16 @@ class GildedRoseTest extends TestCase
         $backStageItem->quality = self::MAXIMUM_ITEM_QUALITY;
 
         return new BackstagePassRuledItem($backStageItem);
+    }
+
+    private function generateConjuredRuledItem(): ConjuredRuledItem
+    {
+        $conjuredItem = $this->generateRegularItem(
+            GildedRose::ITEM_NAME_BACKSTAGE_PASSES_TO_A_TAFKAL_80_ETC_CONCERT,
+            self::DEFAULT_INITIAL_QUALITY,
+            self::DEFAULT_SELL_IN_DAYS
+        );
+
+        return new ConjuredRuledItem($conjuredItem);
     }
 }

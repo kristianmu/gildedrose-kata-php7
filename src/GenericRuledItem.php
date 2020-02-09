@@ -34,12 +34,12 @@ class GenericRuledItem
         $this->item->sell_in = $this->item->sell_in - 1;
     }
 
-    private function hasQuality(): bool
+    protected function hasQuality(): bool
     {
         return $this->item->quality > 0;
     }
 
-    private function decreaseQuality(): void
+    protected function decreaseQuality(): void
     {
         $this->item->quality = $this->item->quality - 1;
     }
