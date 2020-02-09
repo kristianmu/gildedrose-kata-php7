@@ -4,7 +4,8 @@ namespace App;
 
 use Throwable;
 
-class GildedRoseTest extends \PHPUnit\Framework\TestCase {
+class GildedRoseTest extends \PHPUnit\Framework\TestCase
+{
     const REGULAR_ITEM_NAME = "Regular Item";
     const IRRELEVANT_SELL_BY_DATE = 10;
     const DEFAULT_INITIAL_QUALITY = 10;
@@ -27,7 +28,8 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     /**
      * @test
      */
-    public function itShouldNeverHaveANegativeQualityRegularItems() {
+    public function itShouldNeverHaveANegativeQualityRegularItems()
+    {
         $item = $this->generateRegularItemWithZeroQuality();
         $gildedRose = new GildedRose([$item]);
 
@@ -39,7 +41,8 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     /**
      * @test
      */
-    public function itShouldIncreaseInQualityIfAgedBrieItem() {
+    public function itShouldIncreaseInQualityIfAgedBrieItem()
+    {
         $item = $this->generateBrieItemWithZeroQuality();
         $gildedRose = new GildedRose([$item]);
 
@@ -52,7 +55,8 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     /**
      * @test
      */
-    public function itShouldNeverIncreaseInQualityOverFiftyIfAgedBrieItem() {
+    public function itShouldNeverIncreaseInQualityOverFiftyIfAgedBrieItem()
+    {
         $item = $this->generateBrieItemWithFiftyQuality();
         $gildedRose = new GildedRose([$item]);
 
@@ -65,7 +69,8 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     /**
      * @test
      */
-    public function itShouldNeverDecreaseQualityOfSulfuras() {
+    public function itShouldNeverDecreaseQualityOfSulfuras()
+    {
         $item = $this->generateSulfuras();
         $gildedRose = new GildedRose([$item]);
 
@@ -77,7 +82,8 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     /**
      * @test
      */
-    public function itShouldNeverDecreaseSellByDateOfSulfuras() {
+    public function itShouldNeverDecreaseSellByDateOfSulfuras()
+    {
         $item = $this->generateSulfuras();
         $gildedRose = new GildedRose([$item]);
 
@@ -154,9 +160,9 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
     /**
      * @return Item
      */
-    private function generateRegularItem($name = self::REGULAR_ITEM_NAME,  $quality = self::DEFAULT_INITIAL_QUALITY, $sell_by = self::IRRELEVANT_SELL_BY_DATE ): Item
+    private function generateRegularItem($name = self::REGULAR_ITEM_NAME, $quality = self::DEFAULT_INITIAL_QUALITY, $sell_by = self::IRRELEVANT_SELL_BY_DATE): Item
     {
-        return  new Item($name, $sell_by, $quality);
+        return new Item($name, $sell_by, $quality);
     }
 
     /**
@@ -168,7 +174,6 @@ class GildedRoseTest extends \PHPUnit\Framework\TestCase {
         $item->quality = 0;
         return $item;
     }
-
 
 
     /**
